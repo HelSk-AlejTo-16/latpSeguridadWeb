@@ -1,11 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class AuthService{
-
-public login(): string{
-    return "Sesión expirada"
-}
-
-
+export class AuthService {
+  public logIn(): string {
+    return 'Sesión exitosa';
+  }
 }

@@ -1,16 +1,12 @@
-
+import { Controller, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Controller, Get } from "@nestjs/common";
 
-@Controller({})
-export class AuthController{
-    constructor(private readonly authSvc:AuthService){}
+@Controller('api/auth')
+export class AuthController {
+  constructor(private readonly authSvc: AuthService) {}
 
-
-    @Get('1')
-    public logIn(): string{
-return this.authSvc.login()
-
-    }
-
+  @Get('1')
+  public logIn(): string {
+    return this.authSvc.logIn();
+  }
 }

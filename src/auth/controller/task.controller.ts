@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { TaskService } from '../service/task.service'
 
 @Controller('api/task')
@@ -8,10 +8,12 @@ export class TaskController {
   public fetchTasks(): string[] {
     return this.taskSvc.getTasks();
   }
+@Get(":id")
+public getTaskById(@Param("id") id:string):any{
+    return this.taskSvc.getTaskById(parseInt(id));
 
-  public getTaskById(id: number): any {
-    return this.taskSvc.getTaskById(id);
-  }
+
+}
   @Post()
   public insertTask(task: any): any {
     return this.taskSvc.insertTask(task);
@@ -24,4 +26,7 @@ export class TaskController {
   public deleteTask(id: number): any {
     return this.taskSvc.deleteTask(id);
   }
+
+
 }
+

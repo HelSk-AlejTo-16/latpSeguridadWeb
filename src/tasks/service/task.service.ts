@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CreateTaskDto } from "../dto/create-task.dto";
 import { Client } from "pg";
+import { updateTaskDTO } from "src/auth/dto/updateClassDTO";
 
 @Injectable()
 export class TaskService {
@@ -22,8 +23,8 @@ export class TaskService {
 
   public async getTaskById(id: number): Promise<any> {
     const query = `SELECT * FROM tasks where id = ${id}`;
-    const result = await this.db.query(query);
-    return result.rows;
+    const results = (await this.db.query(query)).rows;
+    return results[0];
   }
 
 
@@ -37,11 +38,13 @@ export class TaskService {
 
   }
 
+  public async updateTask(id: number, taskUpdated:updateTaskDTO):Promise<any> {
+    const task = await this.getTaskById(id);
+    task.name= taskUpdated.name ?? task.name;
+    task.description= taskUpdated.description ?? task.description;
+    task.priority= taskUpdated.priority ?? task.priority;
 
 
-
-
-  public async updateTask(id: number, task: any):Promise<any> {
     const query =
       `UPDATE task
   SET name = ${task.name},
@@ -58,9 +61,10 @@ export class TaskService {
 
 
 
-  public deleteTask(id: number): any {
-    const array = this.tasks.filter(data => data.id != id)
-    this.tasks = array;
-    return 'Eliminando la tarea ' + id;
+  public async deleteTask(id: number): Promise<boolean> {
+    const sql = `DELETE FROM tasks where id = ${id}`
+    const result = await this.db.query(sql);
+
+    return result.rowCount! > 0;
   }
 }

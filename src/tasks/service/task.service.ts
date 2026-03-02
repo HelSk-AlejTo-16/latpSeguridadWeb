@@ -1,47 +1,63 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { CreateTaskDto } from "../dto/create-task.dto";
+import { Client } from "pg";
 
 @Injectable()
 export class TaskService {
 
-
-private tasks: any[] = [];
-
+  constructor(@Inject('DATABASE_CONNECTION') private db: Client) { }
 
 
-  public getTasks(): any[] {
-    return this.tasks;
+
+  private tasks: any[] = [];
+
+
+
+  public async getTasks(): Promise<any[]> {
+    const query = `SELECT * FROM tasks`;
+    const result = await this.db.query(query);
+    return result.rows;
+
   }
 
-  public getTaskById(id: number): any {
-    var  task= this.tasks.find((data) => data.id == id);
-    return task;
-  }
-  public insertTask(task: CreateTaskDto): any {
-
-    var id = this.tasks.length +1;
-   var position = this.tasks.push({
-      ...task,
-      id
-    })
-    //task.id = id;
-
-    return this.tasks[position - 1];
+  public async getTaskById(id: number): Promise<any> {
+    const query = `SELECT * FROM tasks where id = ${id}`;
+    const result = await this.db.query(query);
+    return result.rows;
   }
 
 
-  public updateTask(id: number, task: any): any {
-    const taskUpdated = this.tasks.map((data)=> {
-      if (data.id == id){
-        if(task.name) data.name = task.name;
-        if(task.description) data.description = task.description;
-        if(task.priority) data.priority = task.priority;
+  public async insertTask(task: CreateTaskDto): Promise<any> {
 
-        return data;
-      }
-    });
-    return taskUpdated;
+    const query = ` INSERT INTO tasks (name, description, priority VALUES ('${task.name}','${task.description}','${task.description}', RETURNING *)`
+    console.log(query);
+    const result = await this.db.query(query);
+    return result.oid;
+
+
   }
+
+
+
+
+
+  public async updateTask(id: number, task: any):Promise<any> {
+    const query =
+      `UPDATE task
+  SET name = ${task.name},
+  description = ${task.description},
+  priority = ${task.priority}
+  where id = ${id}
+  returning *
+  
+  `;
+
+  const result = await this.db.query(query);
+  return result.rows[0];
+  }
+
+
+
   public deleteTask(id: number): any {
     const array = this.tasks.filter(data => data.id != id)
     this.tasks = array;

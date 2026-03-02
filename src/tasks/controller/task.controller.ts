@@ -5,15 +5,19 @@ import { TaskService } from '../service/task.service'
 export class TaskController {
   constructor(private readonly taskSvc: TaskService) { }
   @Get()
-  public fetchTasks(): any {
-    return this.taskSvc.getTasks();
+  public async fetchTasks(): Promise<any[]> {
+    return await this.taskSvc.getTasks();
   }
 
   /** !GET http:localhost:3000/api/task/1 */
+// %27%20OR%20%271%27=%271
+  // ' OR '1'='1
+  // ' UNION SELECT * FROM users
+
   @Get(":id")
-  public getTaskById(@Param("id", ParseIntPipe) id: number): any {
-    var task = this.taskSvc.getTaskById(id);
-    if (task) return task;
+  public async getTaskById(@Param("id", ParseIntPipe) id: number):Promise <any> {
+    var task =  await this.taskSvc.getTaskById(id);
+    if (task && task.length > 0) return task;
 
     else throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
     

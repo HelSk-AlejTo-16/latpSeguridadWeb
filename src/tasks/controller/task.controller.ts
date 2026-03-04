@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { TaskService } from '../service/task.service'
 import { updateTaskDTO } from 'src/auth/dto/updateClassDTO';
-import { Task } from 'src/auth/entity/task.entity';
+import { Task } from 'src/tasks/entity/task.entity';
 import { STATUS_CODES } from 'http';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
@@ -44,12 +44,15 @@ export class TaskController {
   @HttpCode(HttpStatus.OK)
   public async deleteTask(@Param("id", ParseIntPipe) id: number):Promise <boolean> {
     
+    try{
     const result = await this.taskSvc.deleteTask(id);
-
-    if(!result)
+    }catch(error){
+    
       throw new HttpException("No se puede eliminar la tarea", HttpStatus.INTERNAL_SERVER_ERROR)
-    return result;
+    ;
   }
+  return true;
+}
 
 
 }

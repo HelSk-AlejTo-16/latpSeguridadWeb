@@ -15,7 +15,7 @@ export class CreateTaskDto {
 
     @IsNotEmpty()
     @IsBoolean()
-    priority: boolean;
+    priority: boolean |null;
 
     @IsNumber()
     @IsInt()

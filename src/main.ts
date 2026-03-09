@@ -27,7 +27,7 @@ bootstrap();
 //! git commit -a -m "fix:Conexión a base de datos tradicional" --2 Marzo
 //! git commit -a -m "fix:conexión a base de datos y CRUD completo" --4 marzo
 
-//! git commit -a -m "fix; Uso de prisma y corrección de CRUD (tareas y usuarios)"
+//! git commit -a -m "fix; Uso de prisma y corrección de CRUD (tareas y usuarios)"  --9 de marzo
 
 
 //?BYCRIPT

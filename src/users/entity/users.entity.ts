@@ -3,6 +3,6 @@ export class User {
   name: string;
   lastname: string | null;
   username: string;
-  password: string;
+  password?: string;
   create_at: Date;
 }

@@ -16,11 +16,13 @@ import { CreateUserDto } from '../dto/create-users';
 import { UpdateUserDto } from '../dto//update-users';
 import { User } from '../entity/users.entity';
 import { UserService } from '../service//users.service';
+import { UtilService } from 'src/common/services/util.service';
 
 @ApiTags('Users')
 @Controller('api/user')
 export class UserController {
-  constructor(private readonly userSvc: UserService) {}
+  constructor(private readonly userSvc: UserService,
+  private readonly utilsvc: UtilService ){ }
 
   /** GET http://localhost:3000/api/user */
   @Get()
@@ -42,7 +44,13 @@ export class UserController {
   @Post()
   @ApiOperation({ summary: '| Crea un nuevo usuario' })
   public async insertUser(@Body() user: CreateUserDto): Promise<User> {
-    return await this.userSvc.insertUser(user);
+   
+
+    //encripar contraseña.
+    const encryptedPassword = await this.utilsvc.hashPassword(user.password);
+
+    user.password = encryptedPassword;
+     return await this.userSvc.insertUser(user);
   }
 
   /** PUT http://localhost:3000/api/user/1 */

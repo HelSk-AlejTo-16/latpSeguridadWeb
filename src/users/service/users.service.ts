@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Client } from 'pg';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'src/common/services/prisma.service';
 import { CreateUserDto } from '../dto/create-users';
 import { UpdateUserDto } from '../dto/update-users';
 import { User } from '../entity/users.entity';
@@ -10,16 +10,42 @@ export class UserService {
   constructor(
     @Inject('DATABASE_CONNECTION') private db: Client,
     private prisma: PrismaService,
-  ) {}
+  ) { }
 
   public async getUsers(): Promise<User[]> {
-    const users = await this.prisma.users.findMany();
+    const users = await this.prisma.users.findMany({
+      orderBy: [{ name: "asc" }],
+      
+        select: {
+        id: true,
+        name: true,
+        lastname: true,
+        username: true,
+        password: true,
+        create_at: true
+
+
+      }
+      
+
+    });
     return users;
   }
 
   public async getUserById(id: number): Promise<User> {
     const user = await this.prisma.users.findUniqueOrThrow({
       where: { id },
+      select: {
+        id: true,
+        name: true,
+        lastname: true,
+        username: true,
+        password: false,
+        create_at: true
+
+
+      }
+      
     });
     return user;
   }
@@ -27,6 +53,16 @@ export class UserService {
   public async insertUser(user: CreateUserDto): Promise<User> {
     const newUser = await this.prisma.users.create({
       data: user,
+      select: {
+        id: true,
+        name: true,
+        lastname: true,
+        username: true,
+        password: false,
+        create_at: true
+
+
+      }
     });
     return newUser;
   }

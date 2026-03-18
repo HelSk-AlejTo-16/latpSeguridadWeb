@@ -11,7 +11,7 @@ import { TaskService } from '../service/task.service';
 import { Task } from '../entity/task.entity';
 
 @ApiTags('Tasks')
-@UseGuards(AuthGuard)        // protege todos los endpoints
+@UseGuards(AuthGuard)        
 @Controller('api/task')
 export class TaskController {
   constructor(private readonly taskSvc: TaskService) {}
@@ -24,7 +24,7 @@ export class TaskController {
     return await this.taskSvc.getTasks(id);
   }
 
-  // Obtiene una tarea por ID, solo si pertenece al usuario en sesión
+
   @Get(':id')
   @ApiOperation({ summary: '| Obtiene una tarea por ID' })
   public async getTaskById(
@@ -37,7 +37,7 @@ export class TaskController {
     return task;
   }
 
-  // Crea tarea para el usuario en sesión, sin recibir userId en el body
+
   @Post()
   @ApiOperation({ summary: '| Crea una tarea para el usuario en sesión' })
   public async insertTask(
@@ -48,7 +48,7 @@ export class TaskController {
     return await this.taskSvc.insertTask(dto, userId);
   }
 
-  // Actualiza solo si la tarea pertenece al usuario en sesión
+
   @Put(':id')
   @ApiOperation({ summary: '| Actualiza una tarea del usuario en sesión' })
   public async updateTask(

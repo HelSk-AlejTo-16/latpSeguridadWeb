@@ -29,7 +29,7 @@ bootstrap();
 
 //! git commit -a -m "fix; Uso de prisma y corrección de CRUD (tareas y usuarios)"  --9 de marzo
 
-//! git commit -a -m "" --11 marzo
+//! git commit -a -m "Implementación de JWT y lógica para el inicio de sesión" --11 marzo
 
 //?BYCRIPT
 //! npm i bcrypt

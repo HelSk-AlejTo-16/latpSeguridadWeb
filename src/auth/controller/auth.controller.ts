@@ -15,25 +15,24 @@ export class AuthController {
   @Post("login")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Verifica las credenciales y genera un JWT' })
-  public async logIn(@Body() auth: AuthDto): Promise <any> {
+  public async logIn(@Body() auth: AuthDto): Promise<any> {
     const { username, password } = auth;
-    
+
     const user = await this.authSvc.getUserByUsername(username);
-    if(!user)
+    if (!user)
       throw new UnauthorizedException('Credenciales inválidas');
 
-    if(await this.utilSvc.checkPassword(password, user.password!))
-    {
+    if (await this.utilSvc.checkPassword(password, user.password!)) {
 
       //Obtener token de acceso por 60s
-      const {password, ...payload} = user;
+      const { password, ...payload } = user;
 
       const jwt = await this.utilSvc.generateJWT(payload);
-//FIXME: Generar refresh token por 7d
-const refresh = await this.utilSvc.generateJWT(payload, '7d');
-      return {access_token: jwt, refresh_token: refresh};
+      //FIXME: Generar refresh token por 7d
+      const refresh = await this.utilSvc.generateJWT(payload, '7d');
+      return { access_token: jwt, refresh_token: refresh };
 
-    }else{
+    } else {
       throw new UnauthorizedException('Credenciales inválidas');
     }
   }

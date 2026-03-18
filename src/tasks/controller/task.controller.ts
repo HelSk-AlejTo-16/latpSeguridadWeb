@@ -1,59 +1,78 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
-import { TaskService } from '../service/task.service'
-import { updateTaskDTO } from 'src/auth/dto/updateClassDTO';
-import { Task } from 'src/tasks/entity/task.entity';
-import { STATUS_CODES } from 'http';
+import {
+  Body, Controller, Delete, Get, HttpCode,
+  HttpException, HttpStatus, Param, ParseIntPipe,
+  Post, Put, Req, UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { CreateTaskDto } from '../dto/create-task.dto';
+import { updateTaskDTO } from 'src/auth/dto/updateClassDTO';
+import { TaskService } from '../service/task.service';
+import { Task } from '../entity/task.entity';
 
-@ApiTags("Tasks")
-
-
+@ApiTags('Tasks')
+@UseGuards(AuthGuard)        // protege todos los endpoints
 @Controller('api/task')
 export class TaskController {
-  constructor(private readonly taskSvc: TaskService) { }
+  constructor(private readonly taskSvc: TaskService) {}
+
+  // Lista solo las tareas del usuario en sesión
   @Get()
-  @ApiOperation({summary: '|Lista las tareas disponibles'})
-  public async fetchTasks(): Promise<any[]> {
-    return await this.taskSvc.getTasks();
+  @ApiOperation({ summary: '| Lista las tareas del usuario en sesión' })
+  public async fetchTasks(@Req() req: any): Promise<Task[]> {
+    const { id } = req['user'];
+    return await this.taskSvc.getTasks(id);
   }
 
-  /** !GET http:localhost:3000/api/task/1 */
-// %27%20OR%20%271%27=%271
-  // ' OR '1'='1
-  // ' UNION SELECT * FROM users
-
-  @Get(":id")
-  public async getTaskById(@Param("id", ParseIntPipe) id: number):Promise <Task> {
-    var task =  await this.taskSvc.getTaskById(id);
-    if (task) return task;
-
-    else throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
-    
-
+  // Obtiene una tarea por ID, solo si pertenece al usuario en sesión
+  @Get(':id')
+  @ApiOperation({ summary: '| Obtiene una tarea por ID' })
+  public async getTaskById(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: any,
+  ): Promise<Task> {
+    const { id: userId } = req['user'];
+    const task = await this.taskSvc.getTaskById(id, userId);
+    if (!task) throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
+    return task;
   }
-  /** !POST GET http:localhost:3000/api/task*/
+
+  // Crea tarea para el usuario en sesión, sin recibir userId en el body
   @Post()
-  public insertTask(@Body() task: any): any {
-    return this.taskSvc.insertTask(task);
+  @ApiOperation({ summary: '| Crea una tarea para el usuario en sesión' })
+  public async insertTask(
+    @Body() dto: CreateTaskDto,
+    @Req() req: any,
+  ): Promise<Task> {
+    const { id: userId } = req['user'];
+    return await this.taskSvc.insertTask(dto, userId);
   }
-  @Put(":id")
-  public updateTask(@Body("id", ParseIntPipe) id: number, task: updateTaskDTO): any {
-    return this.taskSvc.updateTask(id, task);
+
+  // Actualiza solo si la tarea pertenece al usuario en sesión
+  @Put(':id')
+  @ApiOperation({ summary: '| Actualiza una tarea del usuario en sesión' })
+  public async updateTask(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: updateTaskDTO,
+    @Req() req: any,
+  ): Promise<Task> {
+    const { id: userId } = req['user'];
+    const task = await this.taskSvc.updateTask(id, dto, userId);
+    if (!task) throw new HttpException('Task not found or unauthorized', HttpStatus.NOT_FOUND);
+    return task;
   }
-  @Delete()
+
+  // Elimina solo si la tarea pertenece al usuario en sesión
+  @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  public async deleteTask(@Param("id", ParseIntPipe) id: number):Promise <boolean> {
-    
-    try{
-    const result = await this.taskSvc.deleteTask(id);
-    }catch(error){
-    
-      throw new HttpException("No se puede eliminar la tarea", HttpStatus.INTERNAL_SERVER_ERROR)
-    ;
+  @ApiOperation({ summary: '| Elimina una tarea del usuario en sesión' })
+  public async deleteTask(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: any,
+  ): Promise<boolean> {
+    const { id: userId } = req['user'];
+    const deleted = await this.taskSvc.deleteTask(id, userId);
+    if (!deleted) throw new HttpException('Task not found or unauthorized', HttpStatus.NOT_FOUND);
+    return true;
   }
-  return true;
 }
-
-
-}
-

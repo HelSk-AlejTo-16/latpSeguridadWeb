@@ -10,44 +10,47 @@ export class TaskService {
   constructor(
     @Inject('DATABASE_CONNECTION') private db: Client,
     private prisma: PrismaService,
+   
   ) {}
+ private tasks: Task[] = [];
 
   // Solo las tareas del usuario en sesión
   public async getTasks(userId: number): Promise<Task[]> {
-    return await this.prisma.task.findMany({
+    const tasks = await this.prisma.task.findMany({
       where: { user_id: userId },
     });
+    return tasks;
   }
 
   // Solo si la tarea pertenece al usuario en sesión
   public async getTaskById(id: number, userId: number): Promise<Task | null> {
-    return await this.prisma.task.findFirst({
+    const task = await this.prisma.task.findFirst({
       where: { id, user_id: userId },
     });
+    return task;
   }
 
   // Asigna user_id desde el token, no del body
-  public async insertTask(dto: CreateTaskDto, userId: number): Promise<Task> {
-    return await this.prisma.task.create({
-      data: {
-        ...dto,
-        user_id: userId,
-      },
+  public async insertTask(task: CreateTaskDto ): Promise<Task> {
+    const newTasks= await this.prisma.task.create({
+      data: task 
     });
+    return newTasks;
   }
 
   // Verifica que la tarea sea del usuario antes de actualizar
-  public async updateTask(id: number, dto: updateTaskDTO, userId: number): Promise<Task | null> {
+  public async updateTask(id: number, taskUpdated: updateTaskDTO, userId: number): Promise<Task | null> {
     const task = await this.prisma.task.findFirst({
-      where: { id, user_id: userId },
+      where: { id:id, user_id: userId },
     });
 
     if (!task) return null; // no existe o no es del usuario
 
     return await this.prisma.task.update({
       where: { id },
-      data: dto,
+      data: taskUpdated,
     });
+    return task;
   }
 
   // Verifica que la tarea sea del usuario antes de borrar

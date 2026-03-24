@@ -1,8 +1,8 @@
 import pg from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg'; // Verifica si es @prisma/adapter-pg o desde client
+import { PrismaPg } from '@prisma/adapter-pg'; 
 import * as dotenv from 'dotenv';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client'; // <--- IMPORTACIÓN CORREGIDA
+import { PrismaClient } from '@prisma/client'; 
 
 dotenv.config()
 

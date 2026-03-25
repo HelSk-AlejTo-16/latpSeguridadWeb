@@ -22,7 +22,7 @@ import { UtilService } from 'src/common/services/util.service';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @ApiTags('Users')
-@UseGuards(AuthGuard)
+//@UseGuards(AuthGuard)
 @Controller('api/user')
 export class UserController {
   constructor(private readonly userSvc: UserService,
@@ -53,7 +53,7 @@ export class UserController {
    
 
     //encripar contraseña.
-    const encryptedPassword = await this.utilsvc.hashPassword(user.password);
+    const encryptedPassword = await this.utilsvc.hash(user.password);
 
     user.password = encryptedPassword;
      return await this.userSvc.insertUser(user);

@@ -22,6 +22,7 @@ export class UserService {
         lastname: true,
         username: true,
         password: true,
+        hash: false,
         create_at: true
 
 
@@ -46,6 +47,7 @@ export class UserService {
         lastname: true,
         username: true,
         password: false,
+        hash:false,
         create_at: true
 
 
@@ -64,6 +66,7 @@ export class UserService {
         lastname: true,
         username: true,
         password: false,
+        hash: false,
         create_at: true
 
 

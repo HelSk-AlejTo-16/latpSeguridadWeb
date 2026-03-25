@@ -4,5 +4,6 @@ export class User {
   lastname: string | null;
   username: string;
   password?: string;
+  hash?: string | null;
   create_at: Date;
 }

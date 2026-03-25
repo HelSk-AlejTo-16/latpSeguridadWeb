@@ -102,6 +102,8 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 Cuando se modifica el archivo schema, prisma se debe de ejecutar.
 cmd 
+npx prisma generate
+
 npx prisma migrate dev --name init
 
 npx prisma migrate reset

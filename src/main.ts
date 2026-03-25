@@ -27,13 +27,18 @@ async function bootstrap() {
 bootstrap();
 
 //! git commit -a -m "fix:Estructura del CRUD de tareas y uso de validaciones" --25 febrero
+
 //! git commit -a -m "fix:Conexión a base de datos tradicional" --2 Marzo
+
 //! git commit -a -m "fix:conexión a base de datos y CRUD completo" --4 marzo
 
 //! git commit -a -m "fix; Uso de prisma y corrección de CRUD (tareas y usuarios)"  --9 de marzo
 
 //! git commit -a -m "Implementación de JWT y lógica para el inicio de sesión" --11 marzo
+
 //! git commit -a -m "Configuración de Guard y corrección del CRUD de tareas" --18 marzo
+
+//! git commit -a -m "fix: Uso de Customs Errors y corrección de rutas (auth)" --23 de marzo
 
 //?BYCRIPT
 //! npm i bcrypt

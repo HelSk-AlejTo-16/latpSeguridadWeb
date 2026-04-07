@@ -77,3 +77,7 @@ export class AuthController {
   }
 
 }
+
+//Implementar en el front end todo esto, en especial el refresh. Cuando se acabe el tiempo que se resetee automaticamente en las cookies.
+//tecnologías sugeridas. Angular
+//m3.material.io, bootstrap, angular material.

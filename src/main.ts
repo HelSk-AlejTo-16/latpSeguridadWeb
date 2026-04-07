@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AllExceptionsFilter } from './common/filters/http-exception-filter';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,7 +11,7 @@ async function bootstrap() {
     whitelist: true
   }));
 
-  app.useGlobalFilters(new AllExceptionsFilter());
+ // app.useGlobalFilters(new AllExceptionsFilter());
 
   //Configuración de swagger.
   const config = new DocumentBuilder().setTitle('API sin vulnerabilidades de Seguridad')
@@ -40,6 +40,11 @@ bootstrap();
 
 //! git commit -a -m "fix: Uso de Customs Errors y corrección de rutas (auth)" --23 de marzo
 
+
+//!git commit -a -m "fix:Corrección de refresh y logout"
+
+
+//!git commit -a -m "fix: Almacenamiento de logs"
 //?BYCRIPT
 //! npm i bcrypt
 //! npm i @types/bcrypt
